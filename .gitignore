@@ -1,0 +1,9 @@
+*.pyc
+DP1KbBins_rc1
+hs37d5.fa*
+Roche_SeqCap_EZ_Exome_v3_capture_1kbBlocksIds.txt
+PGL18-1422.182033.analysisReady.annotated.vcf.gz*
+PGL18-1422.182033.realn.recal*
+*.txt
+*.vcf
+
