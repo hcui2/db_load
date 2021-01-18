@@ -1,8 +1,8 @@
-
 """
 Parse a single sample's VCF for a single chromosome and
 create output tables to load into the database
 """
+
 
 import zlib
 from struct import unpack
@@ -15,6 +15,8 @@ from functools import partial
 from time import time
 import tabix
 import logging
+
+logging.basicConfig()
 
 cfg = get_cfg()
 block_size = cfg.getint("pipeline", "block_size")
@@ -429,17 +431,17 @@ def output_novel_variant(
                         "effect_id":effect_id, "HGVS_c":HGVS_c,
                         "HGVS_p":HGVS_p, "gene":gene}
                     annotations_by_transcript[feature_id].add(effect)
-                    # INGORING THE CALCULATION OF POLYPHEN SCORE FOR NOW! 
-
-                    # if effect == "missense_variant":
-                    #     # calculate PolyPhen scores if possible
-                    #     # sometimes ClinEff includes missense even when the
-                    #     # variant is an indel also, so ignore those
-                    #     annotations[annotations_key].update(
-                    #         calculate_polyphen_scores(
-                    #             cur, feature_id, HGVS_p, VariantID,
-                    #             polyphen_matrixes_by_stable_id,
-                    #             polyphen_stable_ids_to_ignore, logger))
+                    
+                    if effect == "missense_variant":
+                        # calculate PolyPhen scores if possible
+                        # sometimes ClinEff includes missense even when the
+                        # variant is an indel also, so ignore those
+                        annotations[annotations_key].update(
+                            calculate_polyphen_scores(
+                                cur, feature_id, HGVS_p, VariantID,
+                                polyphen_matrixes_by_stable_id,
+                                polyphen_stable_ids_to_ignore, logger))
+                                
         for feature_id, effects in annotations_by_transcript.iteritems():
             if "splice_region_variant" in effects:
                 if "missense_variant" in effects:

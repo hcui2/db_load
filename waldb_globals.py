@@ -10,21 +10,11 @@ import traceback
 from operator import lt, le
 from ConfigParser import ConfigParser, RawConfigParser
 import logging
-# from db_statements import (
-#     GET_SAMPLE_DIRECTORY, GET_TIMES_STEP_RUN, BEGIN_STEP,
-#     FINISH_STEP, FAIL_STEP, GET_PIPELINE_STEP_ID, GET_STEP_STATUS,
-#     GET_SAMPLE_METADATA, GET_CAPTURE_KIT_BED, GET_PREP_STATUS,
-#     UPDATE_PREP_STATUS)
-
-from db_statements import (
-GET_SAMPLE_DIRECTORY, GET_TIMES_STEP_RUN, 
-GET_PIPELINE_STEP_ID, GET_STEP_STATUS,
-GET_SAMPLE_METADATA, GET_CAPTURE_KIT_BED, GET_PREP_STATUS)
 
 from itertools import chain
 from collections import OrderedDict, Counter, defaultdict
 from functools import wraps
-import time
+# import time
 import subprocess
 
 from shlex import split as sxsplit
@@ -35,53 +25,13 @@ import datetime
 
 cfg = RawConfigParser()
 cfg.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), "waldb.cfg"))
+
 LOGGING_LEVELS = {
     "CRITICAL":logging.CRITICAL, "ERROR":logging.ERROR,
     "WARNING":logging.WARNING, "INFO":logging.INFO, "DEBUG":logging.DEBUG}
+
 CHROMs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
           "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y", "MT"]
-GIT = "/nfs/goldstein/software/git-2.5.0/bin/git"
-
-class GitRepoError(Exception):
-    pass
-
-class UncommittedChangesInRepo(Exception):
-    pass
-
-class IncorrectBranch(Exception):
-    pass
-
-def get_pipeline_version():
-    ### clearly incorrect - need to get this location but just don't give a f' atm....
-    td=os.getcwd()
-    print("in {}".format(td))
-    os.chdir('/nfs/goldstein/software/dragen_pipe/master/dragen/python')
-    version = subprocess.check_output(
-        [GIT, "describe", "--tags"]).strip()
-    if version:
-        return version
-    else:
-        raise GitRepoError("Could not get the version # of the pipeline; "
-                           "maybe run it from a directory in the repo?")
-    os.chdir(td)
-
-class DereferenceKeyAction(argparse.Action):
-    """Define a class for automatically converting the key specified from
-    choices to its corresponding value
-    """
-    def __init__(self, option_strings, dest, nargs=None, default=None,
-                 choices=None, **kwargs):
-        if nargs is not None:
-            raise ValueError("nargs should not be specified")
-        if type(choices) is not dict:
-            raise TypeError("choices must be a dict")
-        super(DereferenceKeyAction, self).__init__(
-            option_strings, dest, choices=choices, **kwargs)
-        if default:
-            self.default = choices[default]
-
-    def __call__(self, parser, namespace, values, option_string):
-        setattr(namespace, self.dest, self.choices[values])
 
 VCF_COLUMNS = ["CHROM", "POS", "rs_number", "REF", "ALT", "QUAL", "FILTER",
                "INFO", "FORMAT", "call"]
@@ -156,18 +106,6 @@ def get_fh(fn, mode="r"):
 def get_cfg():
     return cfg
 
-# def get_connection(db):
-#     """return a connection to the database specified
-#     """
-#     defaults_file = cfg.get("db", "cnf")
-#     try:
-#         return MySQLdb.connect(
-#             read_default_file=defaults_file,
-#             read_default_group="client{}".format(db))
-#     except Exception as e:
-#         raise ValueError("specified database group {} is invalid in {}; error: "
-#                          "{}".format(db, defaults_file, e))
-
 def get_connection(db):
     """return a connection to the database specified
     """
@@ -187,12 +125,6 @@ def get_local_connection(db):
     except Exception as e:
         raise ValueError("specified database {} is invalid ; error: "
                          "{}".format(db, e))
-
-def get_last_insert_id(cur):
-    """return the last autoincrement id for the cursor
-    """
-    cur.execute("SELECT LAST_INSERT_ID()")
-    return cur.fetchone()[0]
 
 def create_INFO_dict(INFO):
     """return a dict of key, value pairs in the INFO field
@@ -292,31 +224,6 @@ def merge_dicts(*dict_list):
             new_dict.update(d)
         return new_dict
 
-def get_data_directory(sample_name, prep_id):
-    """Return the directory to the sample's data; this is stored in
-    dragenQCMetrics
-    """
-    seqdb = get_connection("seqdb")
-    try:
-        seq_cur = seqdb.cursor()
-        seq_cur.execute(GET_SAMPLE_DIRECTORY.format(
-            prep_id=prep_id))
-        row = seq_cur.fetchone()
-        if row:
-            path = row[0]
-            if not path:
-                raise OSError("Data directory for {sample_name}:{prep_id} is not "
-                              "set".format(sample_name=sample_name, prep_id=prep_id))
-            return os.path.join(
-                path, "{sample_name}.{prep_id}".format(
-                    sample_name=sample_name, prep_id=prep_id))
-        else:
-            raise OSError("Can't find directory for {sample_name}:{prep_id}".
-                          format(sample_name=sample_name, prep_id=prep_id))
-    finally:
-        if seqdb.open:
-            seqdb.close()
-
 def strip_prefix(string, prefix):
     """Strip the given prefix if it's present
     """
@@ -326,54 +233,6 @@ def strip_suffix(string, suffix):
     """Strip the given suffix if it's present
     """
     return string[:-len(suffix)] if string.endswith(suffix) else string
-
-
-
-# keep a count for each key and maintain the order in which keys were added
-class OrderedCounter(Counter, OrderedDict):
-    pass
-
-# initialize any new key to the default value and maintain the order in which
-# keys were added
-class OrderedDefaultDict(OrderedDict, defaultdict):
-    def __init__(self, default_factory=None, *args, **kwargs):
-        super(OrderedDefaultDict, self).__init__(*args, **kwargs)
-        self.default_factory = default_factory
-
-# wrapper to time a function
-def timer(fh=sys.stdout):
-    def timer_wrapper(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            current_time = time.time()
-            call = ("{func}({args}{separator}{kwargs})".format(
-                func=func.func_name, args=", ".join([str(arg) for arg in args]),
-                separator=", " if args and kwargs else "",
-                kwargs=", ".join(["{}={}".format(arg, value) for arg, value in
-                                  kwargs.iteritems()])))
-            fh.write("Calling {call} @{ctime}\n".format(call=call, ctime=time.ctime()))
-            result = func(*args, **kwargs)
-            fh.write("Finished {call} @{ctime}; elapsed time: {elapsed_time} seconds\n".
-                  format(call=call, ctime=time.ctime(),
-                         elapsed_time=time.time() - current_time))
-            return result
-        return wrapper
-    return timer_wrapper
-
-def run_command(command, directory, task_name, print_command=True):
-    """Run the specified command in a subprocess and log the output
-    """
-    if print_command:
-        print(command)
-    base_name = os.path.join(directory, task_name)
-    with open(base_name + ".out", "w") as out_fh, \
-            open(base_name + ".err", "w") as err_fh:
-        out_fh.write(command + "\n")
-        out_fh.flush()
-        p = subprocess.Popen(sxsplit(command), stdout=out_fh, stderr=err_fh)
-        p.wait()
-    if p.returncode:
-        raise subprocess.CalledProcessError(p.returncode, command)
 
 def file_handle(f, mode="w"):
     """Return a file handle to f; if it's a file handle already, return it,

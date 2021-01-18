@@ -1,9 +1,9 @@
 import os
 import subprocess
 from collections import OrderedDict
-from waldb_globals import *
 import sys
 
+from waldb_globals import *
 
 cfg = get_cfg()
 CHROMs = OrderedDict([[chromosome.upper(), int(length)]
@@ -11,8 +11,7 @@ CHROMs = OrderedDict([[chromosome.upper(), int(length)]
 
 def run_coverage_binning(sample_name, sample_id, bam_file):
     
-    # bin_program='/nfs/seqscratch09/dsth/BedPatch/DP1KbBins_rc1'
-    bin_program='/Users/hongzhucui/Dropbox/_igm_playground/db_load/scripts-hc/DP1KbBins_rc1'
+    bin_program='./DP1KbBins_rc1'
     mmq=20
     mmb=10
     mbd='c'
@@ -32,15 +31,13 @@ def split_subset_DPBins(sample_name, sample_id):
 
     name_prep = sample_name + '.' + sample_id
     
-    dp_blocks_fn = '/Users/hongzhucui/Dropbox/_igm_playground/db_load/scripts-hc/Roche_SeqCap_EZ_Exome_v3_capture_1kbBlocksIds.txt'
-    # dp_blocks_fn = '/nfs/seqscratch09/dsth/BedPatch/1KB_ConsolidatedBed_OrionPurge/Roche_SeqCap_EZ_Exome_v3_capture_1kbBlocksIds.txt'
-    # dp_blocks_fn = '/nfs/seqscratch09/dsth/BedPatch/1KB_ConsolidatedBed_OrionPurge/Genome_v1_Genome_v1_all_1kbBlocksIds.txt'
+    dp_blocks_fn = './Roche_SeqCap_EZ_Exome_v3_capture_1kbBlocksIds.txt'
+
     if not os.path.isfile(dp_blocks_fn):
         raise OSError("DP blocks file does not exist")
 
     coverage_files = dict ([chrom, "{name_prep}_coverage_binned_1000_chr{chrom}.txt".format(
                             name_prep=(sample_name + '.' + sample_id), chrom=chrom)] for chrom in CHROMs ) 
-    
     
     if dp_blocks_fn:
         blocks_to_retain = defaultdict(set)
@@ -76,8 +73,6 @@ def split_subset_DPBins(sample_name, sample_id):
     
     if coverage_out_fh:
         coverage_out_fh.close()
-
-
 
 if __name__ == "__main__":
 

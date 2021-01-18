@@ -1,10 +1,9 @@
 import os
 import tabix
+import sys
 from collections import OrderedDict
 from parse_vcf_local import parse_vcf
 from waldb_globals import *
-import sys
-
 
 cfg = get_cfg()
 CHROMs = OrderedDict([[chromosome.upper(), int(length)]
@@ -40,7 +39,6 @@ if __name__ == "__main__":
     output_base = sample_name + ".out"
     database = "WalDB"
     min_dp_to_include = 3
-    dont_load_data = False
 
     novel_variants = output_base + ".novel_variants.txt"
     novel_indels = output_base + ".novel_indels.txt"
@@ -48,7 +46,6 @@ if __name__ == "__main__":
     called_variants = output_base + ".calls.txt"
     variant_id_vcf = output_base + ".variant_id.vcf"
     matched_indels = output_base + ".matched_indels.txt"
-
 
     for chromosome in CHROMs.iterkeys(): 
     	print ("processing chromsome " + chromosome + " for sample " + sample_name)

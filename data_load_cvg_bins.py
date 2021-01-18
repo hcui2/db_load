@@ -1,7 +1,8 @@
 import os
 import MySQLdb
-from waldb_globals import *
 import sys
+
+from waldb_globals import *
 
 cfg = get_cfg()
 CHROMs = OrderedDict([[chromosome.upper(), int(length)]

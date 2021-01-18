@@ -1,21 +1,20 @@
 import os
-import subprocess
-from waldb_globals import *
 import sys
+import subprocess
+
+from waldb_globals import *
 from db_load_statements import *
 
 cfg = get_cfg()
 CHROMs = OrderedDict([[chromosome.upper(), int(length)]
                       for chromosome, length in cfg.items("chromosomes")])
 
-
 if __name__ == "__main__":
 
     sample_name = sys.argv[1]
     sample_id = sys.argv[2]
-
+    
     output_base = sample_name + ".out"
-
     novel_variants = output_base + ".novel_variants.txt"
     novel_indels = output_base + ".novel_indels.txt"
     novel_transcripts = output_base + ".novel_transcripts.txt"

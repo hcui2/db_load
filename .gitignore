@@ -6,4 +6,11 @@ PGL18-1422.182033.analysisReady.annotated.vcf.gz*
 PGL18-1422.182033.realn.recal*
 *.txt
 *.vcf
+*.tbi
+*.bai
+*.bam
+*.sql
+*.fai
+*.fa
+*.coverage_bins
 
