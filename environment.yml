@@ -1,43 +1,18 @@
 name: dbload
 channels:
-  - anaconda
-  - conda-forge
-  - bioconda
-  - defaults
+  - anaconda
+  - conda-forge
+  - bioconda
+  - defaults
 dependencies:
-  - mysql-connector-c=6.1.11=hccea1a4_1
-  - mysqlclient=1.4.6=py27h0a44026_0
-  - htslib=1.11=h422799e_2
-  - pyfaidx=0.5.9.2=pyh3252c3a_0
-  - pytabix=0.1=py27ha16d4b3_0
-  - samtools=1.11=h725deca_0
-  - tabix=0.2.6=ha92aebf_0
-  - bzip2=1.0.8=hc929b4f_4
-  - c-ares=1.17.1=hc929b4f_0
-  - ca-certificates=2020.12.5=h033912b_0
-  - certifi=2019.11.28=py27h8c360ce_1
-  - krb5=1.17.2=h60d9502_0
-  - libcurl=7.71.1=h9bf37e3_8
-  - libcxx=11.0.0=h4c3b8ed_1
-  - libdeflate=1.7=h35c211d_5
-  - libedit=3.1.20191231=h0678c8f_2
-  - libev=4.33=haf1e3a3_1
-  - libffi=3.2.1=hb1e8313_1007
-  - libnghttp2=1.41.0=h7580e61_2
-  - libssh2=1.9.0=h8a08a2b_5
-  - ncurses=6.2=h2e338ed_4
-  - openssl=1.1.1i=h35c211d_0
-  - pip=20.1.1=pyh9f0ad1d_0
-  - pymysql=0.10.1=pyhd3deb0d_0
-  - python=2.7.15=h8e446fc_1011_cpython
-  - python_abi=2.7=1_cp27m
-  - readline=8.0=h0678c8f_2
-  - setuptools=44.0.0=py27_0
-  - six=1.15.0=pyh9f0ad1d_0
-  - sqlite=3.34.0=h17101e1_0
-  - tk=8.6.10=h0419947_1
-  - wheel=0.36.2=pyhd3deb0d_0
-  - xz=5.2.5=haf1e3a3_1
-  - zlib=1.2.11=h7795811_1010
+  - mysql-connector-c=6.1
+  - mysqlclient=1.4.6
+  - htslib=1.11
+  - pyfaidx=0.5.9
+  - pytabix=0.1
+  - samtools=1.11
+  - tabix
+  - python=2.7
+
 prefix: /anaconda3/envs/dbload
 

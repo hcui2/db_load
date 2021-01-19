@@ -1,11 +1,11 @@
 # db_load
 
-This repo contains some simple scripts for processing and vcf files, bam files and uploading the results to the ATAVdb. 
-
+This repo contains some simple demo scripts for processing vcf files, bam files and uploading the results to the ATAVdb. Please note: these codes are not intended to be applied into production pipeline directly, only serving as a demo. We advise the user to customize the code for your own production pipeline.  
 
 ## Requirement
 * Conda package management system
 * Docker setup for atavdb  
+* mysql client
 
 ## Step 0: set up atavdb with docker and run it
 1. Please check the documentation to set up atavdb and run it with docker. 
