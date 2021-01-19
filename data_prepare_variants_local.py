@@ -37,7 +37,8 @@ if __name__ == "__main__":
     aa_vcf = sys.argv[3]
 
     output_base = sample_name + ".out"
-    database = "WalDB"
+    # database = "WalDB"
+    database = "atavdb"
     min_dp_to_include = 3
 
     novel_variants = output_base + ".novel_variants.txt"
