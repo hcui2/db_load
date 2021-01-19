@@ -21,7 +21,8 @@ if __name__ == "__main__":
     sample_id = sys.argv[2]
     # input_file_dir = sys.argv[3]
 
-    database = "WalDB"
+    # database = "WalDB"
+    database = "atavdb"
     dont_load_data = False
     data_type = "DP"
     

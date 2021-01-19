@@ -106,22 +106,13 @@ def get_fh(fn, mode="r"):
 def get_cfg():
     return cfg
 
-def get_connection(db):
-    """return a connection to the database specified
-    """
-    # defaults_file = cfg.get("db", "cnf")
-    try:
-        return MySQLdb.connect('db6', 'hc3247', '@sVBRacukaFQd6Nn', db)
-    except Exception as e:
-        raise ValueError("specified database {} is invalid ; error: "
-                         "{}".format(db, e))
 
 def get_local_connection(db):
     """return a connection to the database specified
     """
-    # defaults_file = cfg.get("db", "cnf")
+
     try:
-        return MySQLdb.connect('localhost', 'hongzhu', 'admin', db, local_infile=True)
+        return MySQLdb.connect('127.0.0.1', 'root', 'root', db = db, port = 3333, local_infile=True)
     except Exception as e:
         raise ValueError("specified database {} is invalid ; error: "
                          "{}".format(db, e))

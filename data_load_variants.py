@@ -3,7 +3,7 @@ import sys
 import subprocess
 
 from waldb_globals import *
-from db_load_statements import *
+from db_statements import *
 
 cfg = get_cfg()
 CHROMs = OrderedDict([[chromosome.upper(), int(length)]
@@ -22,7 +22,8 @@ if __name__ == "__main__":
     variant_id_vcf = output_base + ".variant_id.vcf"
     matched_indels = output_base + ".matched_indels.txt"
 
-    database = "WalDB"
+    # database = "WalDB"
+    database = "atavdb"
     min_dp_to_include = 3
     dont_load_data = False
     
