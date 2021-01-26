@@ -570,7 +570,7 @@ def parse_vcf(vcf, CHROM, sample_id, database, min_dp_to_include, output_base):
                 INFO = create_INFO_dict(fields["INFO"])
                 if fields["FILTER"] == "PASS":
                     INFO["FILTER"] = "PASS"
-                ### WTF?!?
+
                 elif fields["FILTER"] == "SNP_filter":
                     INFO["FILTER"] = "FAIL"
                 elif fields["FILTER"] == "INDEL_filter":
@@ -664,8 +664,6 @@ def parse_vcf(vcf, CHROM, sample_id, database, min_dp_to_include, output_base):
                     variant_ids.append(
                         (variant_id, block_id, highest_impact, indel))
                 
-#                 print (variant_ids)
-#                 sys.exit(0)
 
                 if "PID" in call_stats:
                     if len(ALT_alleles) > 1:

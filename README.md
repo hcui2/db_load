@@ -53,17 +53,32 @@ conda env create -f environment.yml
 source activate dbload
 ```
 
-## Step 5: parsing sample vcf file and bam file and uploading them to the atavdb 
-1. parse the bam file and upload converage bin data: 
+## Step 5: initialize sample in atavdb 
+1. prepare a csv file containing relevent sample information similar to the demo_sample.csv
+
+2. run the script below to initialize them in atavdb
 ```
-python data_prepare_cvg_bins_local.py NA12878_2 2 NA12878_2.2.realn.recal.bam
-python data_load_cvg_bins.py NA12878_2 2
+python init_samples.py demo_sample.csv 
 ```
 
-2. parse the vcf file and upload the variant data:
-```
-python data_prepare_variants_local.py NA12878_2 2 NA12878_2.2.analysisReady.annotated.vcf.gz
-python data_load_load_variants.py NA12878_2 2
-```
+## Step 6: parsing sample vcf file and bam file and uploading them to the atavdb 
 
-Here NA12878_2 is a user defined sample name; 2 is sample id. 
+* run the script below to parse and upload sample to atavdb. This completes the uploading sample and variant data to atavdb. 
+```
+python import_sample.py NA12878_2 2 NA12878_2.2.analysisReady.annotated.vcf.gz NA12878_2.2.realn.recal.bam
+```
+Here NA12878_2 is a user defined sample name; 2 is sample id.  
+
+* OR you can parse the bam file and vcf file separately with the commands below. 
+    * parse the bam file and upload converage bin data: 
+    ```
+    python data_prepare_cvg_bins_local.py NA12878_2 2 NA12878_2.2.realn.recal.bam
+    python data_load_cvg_bins.py NA12878_2 2
+    ```
+
+    * parse the vcf file and upload the variant data:
+    ```
+    python data_prepare_variants_local.py NA12878_2 2 NA12878_2.2.analysisReady.annotated.vcf.gz
+    python data_load_load_variants.py NA12878_2 2
+    ```
+
